@@ -1,0 +1,23 @@
+- name: Execute Python script to copy test files
+  command: python3 "{{ role_path }}/files/test_script.py" "{{ test_name }}" "{{ dest_path }}"
+  args:
+    removes: "{{ dest_path }}/"
+  register: script_output
+  changed_when: script_output.rc == 0
+
+- name: Debug script output
+  debug:
+    var: script_output.stdout_lines
+
+- name: Execute Python script to compare test files
+  vars:
+    test_number: 1
+  command: python3 "{{ role_path }}/files/result_check.py" "{{ test_name }}" "{{ dest_path }}" "{{ test_number }}"
+  register: compare_output
+  changed_when: compare_output.rc == 0
+
+- name: Debug compare output
+  debug:
+    var: compare_output.stdout_lines
+
+

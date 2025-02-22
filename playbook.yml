@@ -1,0 +1,6 @@
+- name: Copy test files using Python script
+  hosts: localhost
+  gather_facts: no
+  roles:
+    - copy_tests
+
