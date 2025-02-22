@@ -10,7 +10,7 @@ def copy_test_files(test_name, dest_dir):
     base_dir = os.path.dirname(script_path)
 
     # `test/` ディレクトリの絶対パスを計算
-    test_dir = os.path.abspath(os.path.join(base_dir, "..", "..", "..", "test", test_name))
+    test_dir = os.path.abspath(os.path.join(base_dir, "..", "test", test_name))
 
     # コピー先ディレクトリの作成
     os.makedirs(dest_dir, exist_ok=True)

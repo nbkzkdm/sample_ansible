@@ -1,5 +1,5 @@
 - name: Execute Python script to copy test files
-  command: python3 "{{ role_path }}/files/test_script.py" "{{ test_name }}" "{{ dest_path }}"
+  command: python3 "{{ playbook_dir }}/scripts/test_script.py" "{{ test_name }}" "{{ dest_path }}"
   args:
     removes: "{{ dest_path }}/"
   register: script_output
@@ -12,7 +12,7 @@
 - name: Execute Python script to compare test files
   vars:
     test_number: 1
-  command: python3 "{{ role_path }}/files/result_check.py" "{{ test_name }}" "{{ dest_path }}" "{{ test_number }}"
+  command: python3 "{{ playbook_dir }}/scripts/result_check.py" "{{ test_name }}" "{{ dest_path }}" "{{ test_number }}"
   register: compare_output
   changed_when: compare_output.rc == 0
 
