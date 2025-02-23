@@ -18,7 +18,7 @@ ANSIBLE_STDOUT_CALLBACK=json ansible-playbook playbook.yml > ansible_output.json
   command: ls -l /path/to/directory | tee /path/to/output/result.txt
 ```
 
-
+[Ansible Documentation](https://docs.ansible.com/ansible/latest/index.html)
 
 ``` shell
 $ ansible-playbook --help
@@ -103,3 +103,41 @@ Privilege Escalation Options:
                         run operations as this user (default=root)
   -b, --become          run operations with become (does not imply password prompting)
 ```
+
+* テスト名
+* 監視ディレクトリ
+* 成功ディレクトリ
+* エラーディレクトリ
+* 履歴ディレクトリ
+* テスト結果ディレクトリ
+
+1. 成功ディレクトリの内容を削除
+2. エラーディレクトリの内容を削除
+3. 履歴ディレクトリの内容を削除
+4. 監視ディレクトリに何もないこと確認
+5. 監視ディレクトリにファイル配置
+6. 成功ディレクトリに配置のファイルの確認
+7. エラーディレクトリに配置のファイルの確認
+8. 履歴ディレクトリに配置のファイルの確認
+9. 監視ディレクトリに何もないこと確認
+10. テスト結果ディレクトリにエビデンス格納
+
+``` shell
+- name: Remove all files in target directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_fileglob:
+    - "{{ target_directory }}/*"
+
+- name: Remove all subdirectories in target directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_fileglob:
+    - "{{ target_directory }}/*/"
+  when: target_directory is defined
+```
+
+
+
