@@ -1,6 +1,26 @@
 # sample_ansible
 
+## 最新のパッケージ情報を更新
+sudo dnf update -y
+
+## EPELリポジトリを有効化
+sudo dnf install -y epel-release
+
+## Vimインストール
+
+sudo dnf install -y vim
+echo "set number" >> ~/.vimrc
+
+## Ansible をインストール
+sudo dnf install -y ansible
+ansible --version
+
+
+
+
+
 >  ansible-playbook playbook.yml --extra-vars "test_name=test_01 dest_path=test_output"
+>  ansible-playbook playbook.yml --extra-vars "test_name=test_01 dest_path=test_output evidence=evidence"
 
 
 ``` shell

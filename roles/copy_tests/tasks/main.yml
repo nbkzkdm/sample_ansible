@@ -21,3 +21,14 @@
     var: compare_output.stdout_lines
 
 
+- name: Execute ls move
+  vars:
+    evidence: evidence
+  command: python3 "{{ playbook_dir }}/scripts/ls_move.py" "{{ dest_path }}" "{{ evidence }}" "{{ test_name }}"
+  register: aaaa
+  changed_when: aaaa.rc == 0
+
+- name: Debug compare output
+  debug:
+    var: aaaa.stdout_lines
+
