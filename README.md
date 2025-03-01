@@ -1,5 +1,8 @@
 # sample_ansible
 
+vagrant init centos/stream9 --box-version 20250210.0
+
+
 ## 最新のパッケージ情報を更新
 sudo dnf update -y
 
