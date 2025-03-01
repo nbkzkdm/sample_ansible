@@ -17,6 +17,24 @@ ansible --version
 ansible-galaxy collection install community.postgresql
 
 
+python3 --version
+sudo dnf install python3-pip -y
+pip3 install ansible
+pip3 --version
+python3 -m pip install --upgrade pip
+pip3 --version
+pip3 install ansible
+pip3 install ansible-navigator
+pip3 install ansible-builder
+ansible-navigator --version
+ansible-builder --version
+
+sudo dnf install postgresql-devel -y
+sudo dnf install python3-devel -y
+sudo dnf install gcc -y
+pip3 install psycopg2
+
+pip3 install psycopg2-binary
 
 
 >  ansible-playbook playbook.yml --extra-vars "test_name=test_01 dest_path=test_output"
