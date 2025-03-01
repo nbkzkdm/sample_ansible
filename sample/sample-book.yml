@@ -1,0 +1,62 @@
+- hosts: all
+  vars_files:
+    - group_vars/all.yml
+
+  tasks:
+    - name: SELECT処理の実行
+      community.postgresql.postgresql_script:
+        login_host: "{{ db_host }}"
+        login_port: "{{ db_port }}"
+        login_db: "{{ db_name }}"
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_password }}"
+        path: "./sql/select.sql"
+      register: select_result
+
+    - name: SELECT結果の表示
+      debug:
+        var: select_result
+
+    - name: INSERT処理の実行
+      community.postgresql.postgresql_script:
+        login_host: "{{ db_host }}"
+        login_port: "{{ db_port }}"
+        login_db: "{{ db_name }}"
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_password }}"
+        path: "./sql/insert.sql"
+
+    - name: UPDATE処理の実行
+      community.postgresql.postgresql_script:
+        login_host: "{{ db_host }}"
+        login_port: "{{ db_port }}"
+        login_db: "{{ db_name }}"
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_password }}"
+        path: "./sql/update.sql"
+
+    - name: DELETE処理の実行
+      community.postgresql.postgresql_script:
+        login_host: "{{ db_host }}"
+        login_port: "{{ db_port }}"
+        login_db: "{{ db_name }}"
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_password }}"
+        path: "./sql/delete.sql"
+
+    - name: SELECT処理の実行
+      vars:
+        test_name: test_01   # パラメータ化（ここを別の値にすれば別テストが実行可能）
+        subtest: sub01        # サブテスト名もパラメータ化
+      community.postgresql.postgresql_script:
+        login_host: "{{ db_host }}"
+        login_port: "{{ db_port }}"
+        login_db: "{{ db_name }}"
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_password }}"
+        path: "./sql/{{ test_name }}/{{ subtest }}/select.sql"
+      register: select_result
+
+    - name: SELECT結果表示
+      debug:
+        var: select_result

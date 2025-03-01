@@ -11,8 +11,9 @@
 
 - name: Execute Python script to compare test files
   vars:
+    subtest: sub01
     test_number: 1
-  command: python3 "{{ playbook_dir }}/scripts/result_check.py" "{{ test_name }}" "{{ dest_path }}" "{{ test_number }}"
+  command: python3 "{{ playbook_dir }}/scripts/result_check.py" "{{ test_name }}" "{{ subtest }}" "{{ dest_path }}" "{{ test_number }}"
   register: compare_output
   changed_when: compare_output.rc == 0
 
@@ -24,7 +25,9 @@
 - name: Execute ls move
   vars:
     evidence: evidence
-  command: python3 "{{ playbook_dir }}/scripts/ls_move.py" "{{ dest_path }}" "{{ evidence }}" "{{ test_name }}"
+    subtest: sub01
+    prefix: PRE
+  command: python3 "{{ playbook_dir }}/scripts/ls_move.py" "{{ dest_path }}" "{{ evidence }}" "{{ test_name }}" "{{ subtest }}" "{{ prefix }}"
   register: aaaa
   changed_when: aaaa.rc == 0
 

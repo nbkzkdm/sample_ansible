@@ -14,7 +14,7 @@ echo "set number" >> ~/.vimrc
 ## Ansible をインストール
 sudo dnf install -y ansible
 ansible --version
-
+ansible-galaxy collection install community.postgresql
 
 
 

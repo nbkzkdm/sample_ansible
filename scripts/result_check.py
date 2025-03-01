@@ -16,61 +16,79 @@ def compare_files(expected_file, actual_file):
     return expected_content == actual_content
 
 
-def compare_directories(test_name, target_dir, number):
-    print(f"test_name '{test_name}', target_dir: {target_dir}, number: {number}", flush=True)
-    """指定ディレクトリのファイルと、期待されるディレクトリのファイルを比較"""
-    base_dir = os.path.join(".", "test_expected", test_name)
-    # str(number)
+def find_expected_directory(base_dir, number):
+    """指定番号に該当する期待ディレクトリを探す（<number>_ で始まるディレクトリ）"""
+    pattern = re.compile(f'{re.escape(str(number))}_.*')
 
-    if not os.path.exists(base_dir):
-        print(f"Expected directory '{base_dir}' does not exist.", flush=True)
-        sys.exit(1)
-
-    pattern = re.compile(f'{str(number)}_.*')
-
-    expected_dir = None
     for item in os.listdir(base_dir):
         full_path = os.path.join(base_dir, item)
         if os.path.isdir(full_path) and pattern.match(item):
-            expected_dir = full_path
-            break
-    print(f"Expected directory '{expected_dir}'", flush=True)
+            return full_path
 
-    if not os.path.exists(expected_dir):
-        print(f"Expected directory '{expected_dir}' does not exist.", flush=True)
+    print(f"Expected directory with prefix '{number}_' not found in '{base_dir}'.", flush=True)
+    sys.exit(1)
+
+
+def compare_directories(test_name, sub_dir, target_dir, number):
+    print(f"test_name: '{test_name}', sub_dir: '{sub_dir}', target_dir: '{target_dir}', number: {number}", flush=True)
+
+    # 期待ディレクトリのパス（test_expected/test_name/sub_dir）
+    expected_base_dir = os.path.join("test_expected", test_name, sub_dir)
+
+    if not os.path.exists(expected_base_dir):
+        print(f"Expected base directory '{expected_base_dir}' does not exist.", flush=True)
         sys.exit(1)
+
+    # <number>_ で始まるディレクトリを検索
+    expected_dir = find_expected_directory(expected_base_dir, number)
+
+    print(f"Expected directory: '{expected_dir}'", flush=True)
 
     if not os.path.exists(target_dir):
         print(f"Target directory '{target_dir}' does not exist.", flush=True)
         sys.exit(1)
 
-    expected_files = {f for f in os.listdir(expected_dir) if os.path.isfile(os.path.join(expected_dir, f))}
-    actual_files = {f for f in os.listdir(target_dir) if os.path.isfile(os.path.join(target_dir, f))}
+    # ファイル一覧取得
+    expected_files = [os.path.join(expected_dir, f) for f in os.listdir(expected_dir)
+                      if os.path.isfile(os.path.join(expected_dir, f))]
+    actual_files = [os.path.join(target_dir, f) for f in os.listdir(target_dir)
+                    if os.path.isfile(os.path.join(target_dir, f))]
 
-    if expected_files != actual_files:
-        print("File names do not match!", flush=True)
-        print("Expected:", expected_files, flush=True)
-        print("Actual:", actual_files, flush=True)
+    if len(expected_files) != len(actual_files):
+        print("File counts do not match!", flush=True)
+        print(f"Expected file count: {len(expected_files)}, Actual file count: {len(actual_files)}", flush=True)
         sys.exit(1)
 
-    for file in expected_files:
-        expected_file_path = os.path.join(expected_dir, file)
-        actual_file_path = os.path.join(target_dir, file)
+    # ファイル内容の突合せ（名前一致は無視、順不同で内容一致を確認）
+    unmatched_expected = expected_files.copy()
+    unmatched_actual = actual_files.copy()
 
-        if not compare_files(expected_file_path, actual_file_path):
-            print(f"File '{file}' does not match!", flush=True)
-            sys.exit(1)
+    for expected_file in expected_files:
+        matched = False
+        for actual_file in actual_files:
+            if compare_files(expected_file, actual_file):
+                matched = True
+                unmatched_expected.remove(expected_file)
+                unmatched_actual.remove(actual_file)
+                break
+
+    if unmatched_expected or unmatched_actual:
+        print("Some files did not match!", flush=True)
+        print(f"Unmatched expected files: {unmatched_expected}", flush=True)
+        print(f"Unmatched actual files: {unmatched_actual}", flush=True)
+        sys.exit(1)
 
     print("All files match!")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print("Usage: python3 script.py <test_name> <target_directory> <number>", flush=True)
+    if len(sys.argv) != 5:
+        print("Usage: python3 script.py <test_name> <subDir> <target_directory> <number>", flush=True)
         sys.exit(1)
 
     test_name = sys.argv[1]
-    target_directory = sys.argv[2]
-    number = sys.argv[3]
+    sub_dir = sys.argv[2]
+    target_directory = sys.argv[3]
+    number = sys.argv[4]
 
-    compare_directories(test_name, target_directory, number)
+    compare_directories(test_name, sub_dir, target_directory, number)

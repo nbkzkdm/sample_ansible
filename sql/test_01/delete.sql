@@ -1,0 +1,1 @@
+DELETE FROM sample_table WHERE column1 = 'value1';
